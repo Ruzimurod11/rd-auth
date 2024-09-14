@@ -5,6 +5,7 @@ import React from "react";
 const Form = ({ title, handleClick }) => {
    const [email, setEmail] = useState("");
    const [pass, setPass] = useState("");
+
    return (
       <div>
          <input

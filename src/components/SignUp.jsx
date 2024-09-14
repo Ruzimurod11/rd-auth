@@ -1,7 +1,7 @@
-import React from "react";
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { setUser } from "../store/slices/userSlice";
 import Form from "./Form";
 
 const SignUp = () => {
