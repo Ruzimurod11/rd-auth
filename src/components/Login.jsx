@@ -5,12 +5,16 @@ import { useDispatch } from "react-redux";
 import { setUser } from "../store/slices/userSlice";
 
 const Login = () => {
-   const auth = getAuth();
    const dispatch = useDispatch();
-   const handleLogin = () => {
-      console.log();
+
+   const handleLogin = (email, password) => {
+      const auth = getAuth();
+      signInWithEmailAndPassword(auth, email, password)
+         .then(console.log())
+         .catch(console.error);
    };
-   return <div>Login</div>;
+
+   return <Form title='sign in' handleClick={handleLogin} />;
 };
 
 export default Login;

@@ -6,7 +6,7 @@ const Form = ({ title, handleClick }) => {
    const [email, setEmail] = useState("");
    const [pass, setPass] = useState("");
    return (
-      <form>
+      <div>
          <input
             type='text'
             value={email}
@@ -19,8 +19,8 @@ const Form = ({ title, handleClick }) => {
             onChange={(e) => setPass(e.target.value)}
             placeholder='password'
          />
-         <button onClick={handleClick}> {title} </button>
-      </form>
+         <button onClick={() => handleClick(email, pass)}> {title} </button>
+      </div>
    );
 };
 
