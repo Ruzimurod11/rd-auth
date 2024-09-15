@@ -1,4 +1,7 @@
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { setDoc, doc } from "firebase/firestore";
+import { db } from "../firebase";
+import { getDatabase, ref, set } from "firebase/database";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setUser } from "../store/slices/userSlice";
@@ -13,6 +16,12 @@ const SignUp = () => {
       createUserWithEmailAndPassword(auth, email, password)
          .then(({ user }) => {
             console.log(user);
+            if (user) {
+               const db = getDatabase();
+               set(ref(db, "/users/" + user.uid), {
+                  email: user.email,
+               });
+            }
             dispatch(
                setUser({
                   email: user.email,
