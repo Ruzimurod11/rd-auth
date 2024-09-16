@@ -1,0 +1,18 @@
+.btns {
+   display: flex;
+   justify-content: start;
+}
+
+.btns__item {
+   border: 1px solid black;
+   padding: 3px 12px;
+   box-shadow: rgba(18, 9, 14, 0.4) 4px 4px;
+}
+
+.btns__item_delete {
+   background: red;
+}
+
+.btn__delete {
+   color: white;
+}

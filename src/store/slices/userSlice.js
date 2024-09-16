@@ -1,9 +1,17 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, current } from "@reduxjs/toolkit";
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "../../firebase";
+
+const usersCollectionRef = collection(db, "users");
+
+export const getUser = createAsyncThunk("user/getUser", async () => {
+   const response = await getDocs(usersCollectionRef);
+   const data = response.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
+   return data;
+});
 
 const initialState = {
-   email: null,
-   token: null,
-   id: null,
+   user: [],
 };
 
 const userSlice = createSlice({
@@ -11,18 +19,35 @@ const userSlice = createSlice({
    initialState,
    reducers: {
       setUser(state, action) {
-         state.email = action.payload.email;
-         state.token = action.payload.token;
-         state.id = action.payload.id;
+         state.user.push(action.payload);
       },
-      removeUser(state) {
-         state.email = null;
-         state.token = null;
-         state.id = null;
+
+      updataUserIs(state, action) {
+         const toggleStatus = state.user.find(
+            (item) => item.id === action.payload.id
+         );
+         toggleStatus.status = !toggleStatus.status;
       },
+
+      deleteUserIs(state, action) {
+         const userId = action.payload;
+         state.user = current(state.user).filter((item) => item.id !== userId);
+      },
+   },
+   extraReducers: (builder) => {
+      builder.addCase(getUser.pending, (state) => {
+         state.status = "loading";
+      });
+      builder.addCase(getUser.fulfilled, (state, action) => {
+         state.status = "success";
+         state.user.push(...action.payload);
+      });
+      builder.addCase(getUser.rejected, (state) => {
+         state.status = "failed";
+      });
    },
 });
 
-export const { setUser, removeUser } = userSlice.actions;
+export const { setUser, deleteUserIs, updataUserIs } = userSlice.actions;
 
 export default userSlice.reducer;

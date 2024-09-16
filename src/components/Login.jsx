@@ -26,7 +26,7 @@ const Login = () => {
          .catch(console.error);
    };
 
-   return <Form title='sign in' handleClick={handleLogin} />;
+   return <Form title='Sign in' handleClick={handleLogin} />;
 };
 
 export default Login;
