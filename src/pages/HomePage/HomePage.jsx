@@ -14,9 +14,9 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 
 const HomePage = () => {
-   const { user, changeStatus } = useSelector((state) => state.user);
-   const [localStatus, setLocalStatus] = useState(false);
-   const [users, setUsers] = useState();
+   const { user } = useSelector((state) => state.user);
+   const [isCheckAll, setIsCheckAll] = useState(false);
+   const [selectedUsers, setSelectedUsers] = useState([]);
    const dispatch = useDispatch();
 
    const updataUser = async (id, status) => {
@@ -42,24 +42,52 @@ const HomePage = () => {
       // deleteUser(id);
    };
 
+   // checked users
+   const handleCheckbox = async (e) => {
+      const { value, checked } = e.target;
+      setSelectedUsers([...selectedUsers, value]);
+      if (!checked) {
+         setSelectedUsers(selectedUsers.filter((item) => item !== value));
+      }
+   };
+   console.log(selectedUsers);
+
+   const allChecked = async () => {
+      setIsCheckAll(!isCheckAll);
+      setSelectedUsers(user.map((li) => li.id));
+      if (isCheckAll) {
+         setSelectedUsers([]);
+      }
+   };
+
+   const allDelete = () => {
+      selectedUsers.map((item) => {
+         handleDeleteUser(item);
+      });
+   };
+
    useEffect(() => {
       dispatch(getUser());
    }, []);
 
    return (
       <>
-         <Navbar />
-         <Buttons />
+         <Navbar selectedUsers={selectedUsers} />
+         <Buttons onDelete={allDelete} />
+
          <div className='container'>
             <table className='mt-2 table table-bordered border-secondary'>
                <thead>
                   <tr className={cl(s.items__row)}>
-                     <th className={s.blockForm__input}>
-                        <div className={s.checkbox}>
-                           <input type='checkbox' value='checkAll' />
-                        </div>
+                     <th scope='col' className={s.blockForm__input}>
+                        <input
+                           type='checkbox'
+                           checked={isCheckAll}
+                           onChange={allChecked}
+                        />
                      </th>
                      <th
+                        scope='col'
                         className={cl(
                            "d-flex align-items-center justify-content-between"
                         )}>
@@ -71,26 +99,31 @@ const HomePage = () => {
                            <FaCaretDown />
                         </div>
                      </th>
-                     <th>email</th>
-                     <th>Last login</th>
-                     <th>Status</th>
-                     <th>Status change</th>
-                     <th>del</th>
+                     <th scope='col'>email</th>
+                     <th scope='col'>Last login</th>
+                     <th scope='col'>Status</th>
+                     <th scope='col'>Status change</th>
+                     <th scope='col'>del</th>
                   </tr>
                </thead>
                <tbody>
                   {user?.map((user) => (
                      <tr key={user.id} className={s.items__row}>
-                        <th className={s.blockForm__input}>
-                           <div className={s.checkbox}>
-                              <input type='checkbox' />
-                           </div>
-                        </th>
+                        <td>
+                           <input
+                              className={s.checked}
+                              type='checkbox'
+                              onChange={handleCheckbox}
+                              value={user.id}
+                              checked={selectedUsers.includes(user.id)}
+                              tabIndex={user.tabIndex}
+                           />
+                        </td>
                         <td className={cl("d-flex flex-column")}>
                            <div className={s.user__name}>{user.name}</div>
                            <span> {user.position} </span>
                         </td>
-                        <td className={s.user__info}> {user.email} </td>
+                        <td className={s.user__info}>{user.email}</td>
                         <td className={s.user__info}> {user.lastLogin} </td>
                         <td className={s.user__info}>
                            {user.status ? "active" : "blocked"}
@@ -107,6 +140,7 @@ const HomePage = () => {
                            <button
                               onClick={() => {
                                  handleDeleteUser(user.id);
+                                 console.log(user);
                               }}>
                               del
                            </button>
@@ -115,6 +149,7 @@ const HomePage = () => {
                   ))}
                </tbody>
             </table>
+            {selectedUsers}
          </div>
       </>
    );

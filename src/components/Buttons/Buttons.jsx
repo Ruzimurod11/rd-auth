@@ -5,7 +5,7 @@ import { IoLockClosedSharp } from "react-icons/io5";
 import { BsUnlockFill } from "react-icons/bs";
 import { RiDeleteBin6Fill } from "react-icons/ri";
 
-const Buttons = () => {
+const Buttons = ({ onDelete }) => {
    return (
       <div className={cl(s.btns, "container mt-3 gap-3")}>
          <div className={s.btns__item}>
@@ -14,7 +14,9 @@ const Buttons = () => {
          <div className={s.btns__item}>
             <BsUnlockFill />
          </div>
-         <div className={cl(s.btns__item, s.btns__item_delete)}>
+         <div
+            onClick={onDelete}
+            className={cl(s.btns__item, s.btns__item_delete)}>
             <RiDeleteBin6Fill className={s.btn__delete} />
          </div>
       </div>

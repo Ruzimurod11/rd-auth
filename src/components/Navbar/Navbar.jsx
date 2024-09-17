@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import s from "./Navbar.module.scss";
 
 const Navbar = () => {
    return (
@@ -9,6 +10,7 @@ const Navbar = () => {
             <div className='mx-3'>
                Hello, <a href='#'>John Lennon! </a>
             </div>
+            <div className={s.link__text}></div>
             <a href='#'>Logout </a>
          </div>
       </nav>
