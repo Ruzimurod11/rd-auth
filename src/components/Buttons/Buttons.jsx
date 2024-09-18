@@ -5,10 +5,10 @@ import { IoLockClosedSharp } from "react-icons/io5";
 import { BsUnlockFill } from "react-icons/bs";
 import { RiDeleteBin6Fill } from "react-icons/ri";
 
-const Buttons = ({ onDelete }) => {
+const Buttons = ({ onDelete, onUpdate }) => {
    return (
       <div className={cl(s.btns, "container mt-3 gap-3")}>
-         <div className={s.btns__item}>
+         <div onClick={onUpdate} className={s.btns__item}>
             <IoLockClosedSharp /> Block
          </div>
          <div className={s.btns__item}>

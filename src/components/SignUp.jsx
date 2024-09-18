@@ -13,7 +13,7 @@ const SignUp = () => {
    const [newName, setNewName] = useState("");
    const [newPosition, setNewPostion] = useState("");
    const [status, setStatus] = useState(true);
-   const [tabIndex, setTabIndex] = useState(0);
+   const [onSelect, setSelect] = useState(false);
    const dispatch = useDispatch();
    const navigate = useNavigate();
 
@@ -30,7 +30,7 @@ const SignUp = () => {
                   email: user.email,
                   lastLogin: user.metadata.lastSignInTime,
                   status: status,
-                  tabIndex: tabIndex,
+                  onSelect: onSelect,
                });
             }
             dispatch(
@@ -40,7 +40,8 @@ const SignUp = () => {
                   email: user.email,
                   lastLogin: user.metadata.lastSignInTime,
                   status: status,
-                  tabIndex: tabIndex,
+                  onSelect: onSelect,
+
                   id: user.uid,
                   token: user.accessToken,
                })

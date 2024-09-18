@@ -6,6 +6,7 @@ import s from "./HomePage.module.scss";
 import { db } from "../../firebase";
 import Navbar from "../../components/Navbar/Navbar";
 import Buttons from "../../components/Buttons/Buttons";
+import { chunk } from "lodash";
 import {
    deleteUserIs,
    getUser,
@@ -16,8 +17,10 @@ import { useDispatch, useSelector } from "react-redux";
 const HomePage = () => {
    const { user } = useSelector((state) => state.user);
    const [isCheckAll, setIsCheckAll] = useState(false);
-   const [selectedUsers, setSelectedUsers] = useState([]);
+   const [changeStatus, setChangeStatus] = useState([]);
    const dispatch = useDispatch();
+
+   /* =================== UPDATED USERS ====================================== */
 
    const updataUser = async (id, status) => {
       const userDoc = doc(db, "users", id);
@@ -28,41 +31,52 @@ const HomePage = () => {
    // handle update
    const handleUpdateUser = (id, status) => {
       dispatch(updataUserIs({ id, status }));
-      updataUser(id, status);
+      // updataUser(id, status);
    };
+
+   /* =================== DELETED USERS ====================================== */
 
    const deleteUser = async (id) => {
       const userDoc = doc(db, "users", id);
       await deleteDoc(userDoc);
    };
 
-   // handle delete
    const handleDeleteUser = (id) => {
       dispatch(deleteUserIs(id));
       // deleteUser(id);
    };
 
-   // checked users
+   /* =================== SELECTED USERS ====================================== */
+
    const handleCheckbox = async (e) => {
-      const { value, checked } = e.target;
-      setSelectedUsers([...selectedUsers, value]);
+      user.map((item) => {
+         setChangeStatus([...changeStatus, item]);
+      });
+      const { id, checked, value } = e.target;
+      setChangeStatus([...changeStatus, id]);
+
       if (!checked) {
-         setSelectedUsers(selectedUsers.filter((item) => item !== value));
+         setChangeStatus(changeStatus.filter((item) => item.id !== id));
       }
    };
-   console.log(selectedUsers);
 
-   const allChecked = async () => {
+   console.log(changeStatus);
+
+   const handleSelectAll = async () => {
       setIsCheckAll(!isCheckAll);
-      setSelectedUsers(user.map((li) => li.id));
+      setChangeStatus(user.map((li) => li));
       if (isCheckAll) {
-         setSelectedUsers([]);
+         setChangeStatus([]);
       }
    };
 
-   const allDelete = () => {
-      selectedUsers.map((item) => {
-         handleDeleteUser(item);
+   /* =================== /SELECTED USERS ====================================== */
+
+   const allDelete = () => {};
+
+   const allUpdate = () => {
+      changeStatus.map((item) => {
+         handleUpdateUser(item.id, item.status);
       });
    };
 
@@ -72,8 +86,8 @@ const HomePage = () => {
 
    return (
       <>
-         <Navbar selectedUsers={selectedUsers} />
-         <Buttons onDelete={allDelete} />
+         <Navbar />
+         <Buttons />
 
          <div className='container'>
             <table className='mt-2 table table-bordered border-secondary'>
@@ -81,9 +95,10 @@ const HomePage = () => {
                   <tr className={cl(s.items__row)}>
                      <th scope='col' className={s.blockForm__input}>
                         <input
+                           name='allSelect'
                            type='checkbox'
                            checked={isCheckAll}
-                           onChange={allChecked}
+                           onChange={handleSelectAll}
                         />
                      </th>
                      <th
@@ -111,12 +126,12 @@ const HomePage = () => {
                      <tr key={user.id} className={s.items__row}>
                         <td>
                            <input
-                              className={s.checked}
                               type='checkbox'
+                              name={user.name}
+                              id={user.id}
+                              value={user.status}
+                              checked={changeStatus.includes(user.id)}
                               onChange={handleCheckbox}
-                              value={user.id}
-                              checked={selectedUsers.includes(user.id)}
-                              tabIndex={user.tabIndex}
                            />
                         </td>
                         <td className={cl("d-flex flex-column")}>
@@ -149,10 +164,51 @@ const HomePage = () => {
                   ))}
                </tbody>
             </table>
-            {selectedUsers}
+            {/* {selectedUsers} */}
          </div>
       </>
    );
 };
 
 export default HomePage;
+
+/*
+
+   const handleCheckbox = async (e) => {
+      const { value, status, name, checked } = e.target;
+      setSelectedUsers([...selectedUsers, value]);
+      setSelectStatus([...selectStatus, value, name]);
+      console.log(JSON.stringify(selectStatus));
+
+      if (!checked) {
+         setSelectedUsers(selectedUsers.filter((item) => item !== value));
+         setSelectStatus(selectStatus.find((item) => item !== value));
+      }
+   };
+
+   console.log(selectStatus);
+
+   const allChecked = async () => {
+      setIsCheckAll(!isCheckAll);
+      setSelectedUsers(user.map((li) => li.id));
+      setSelectStatus(user.map((li) => li));
+      if (isCheckAll) {
+         setSelectedUsers([]);
+         setSelectStatus([]);
+      }
+   };
+
+   const allDelete = () => {
+      selectedUsers.map((item) => {
+         handleDeleteUser(item);
+      });
+   };
+
+   const allUpdate = () => {
+      if (user.length === selectStatus.length) {
+         selectStatus.map((item) => {
+            handleUpdateUser(item.id, item.status);
+         });
+      }
+   };
+*/
