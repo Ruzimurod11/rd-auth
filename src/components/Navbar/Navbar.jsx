@@ -1,17 +1,21 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import cl from "classnames";
 import s from "./Navbar.module.scss";
+import { Link } from "react-router-dom";
 
-const Navbar = () => {
+const Navbar = ({ userName, currentUser, handleLogout }) => {
    return (
       <nav className='navbar bg-body-secondary'>
-         <div className='container d-flex justify-content-end'>
-            <Link to='/register'>Register</Link>
-            <div className='mx-3'>
-               Hello, <a href='#'>John Lennon! </a>
-            </div>
-            <div className={s.link__text}></div>
-            <a href='#'>Logout </a>
+         <div className='container d-flex justify-content-end gap-4'>
+            <span className={cl(s.heading, "mr-4")}>
+               Hello,
+               <Link to='#' className={s.user__name}>
+                  {userName || currentUser?.email || "User"}!
+               </Link>
+            </span>
+            <button className={s.logout} onClick={handleLogout}>
+               Logout
+            </button>
          </div>
       </nav>
    );
