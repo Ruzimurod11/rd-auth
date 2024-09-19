@@ -13,7 +13,6 @@ import s from "./AdminPage.module.scss";
 import { auth, db } from "../../firebase";
 import Navbar from "../../components/Navbar/Navbar";
 import Buttons from "../../components/Buttons/Buttons";
-import { useDispatch, useSelector } from "react-redux";
 import { signOut } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 
@@ -24,7 +23,6 @@ const AdminPage = () => {
    const [isCheckAll, setIsCheckAll] = useState(false);
    const [userName, setUserName] = useState("");
    const navigate = useNavigate();
-   const dispatch = useDispatch();
    useEffect(() => {
       const fetchCurrentUserData = async () => {
          const user = auth.currentUser;
